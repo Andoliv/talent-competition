@@ -9,4 +9,4 @@
 **/node_modules/
 **/bin/
 **/obj/
-# **/dist/
+**/dist/
