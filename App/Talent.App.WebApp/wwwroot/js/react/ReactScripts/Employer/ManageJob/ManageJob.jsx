@@ -5,7 +5,7 @@ import LoggedInBanner from '../../Layout/Banner/LoggedInBanner.jsx';
 import { LoggedInNavigation } from '../../Layout/LoggedInNavigation.jsx';
 import { JobSummaryCard } from './JobSummaryCard.jsx';
 import { BodyWrapper, loaderData } from '../../Layout/BodyWrapper.jsx';
-import { Pagination, Icon, Dropdown, Checkbox, Accordion, Form, Segment } from 'semantic-ui-react';
+import { Pagination, Icon, Dropdown, Checkbox, Accordion, Form, Segment, Item } from 'semantic-ui-react';
 
 export default class ManageJob extends React.Component {
     constructor(props) {
@@ -23,18 +23,21 @@ export default class ManageJob extends React.Component {
             },
             filter: {
                 showActive: true,
-                showClosed: false,
+                showClosed: true,
                 showDraft: true,
                 showExpired: true,
                 showUnexpired: true
             },
             totalPages: 1,
+            limit: 6,
             activeIndex: ""
         }
         this.loadData = this.loadData.bind(this);
         this.init = this.init.bind(this);
         this.loadNewData = this.loadNewData.bind(this);
         this.handleFilterChange = this.handleFilterChange.bind(this);
+        this.handleSortChange = this.handleSortChange.bind(this);
+        this.handlePageChange = this.handlePageChange.bind(this);
     };
 
     init() {
@@ -82,7 +85,8 @@ export default class ManageJob extends React.Component {
 
                     this.setState({
                         loadJobs: res.myJobs,
-                        loaderData: loaderData
+                        loaderData: loaderData,
+                        totalPages: Math.ceil(res.totalCount / this.state.limit)
                     })
                     if (callback) callback();
                 }.bind(this),
@@ -92,34 +96,11 @@ export default class ManageJob extends React.Component {
         })
     }
 
-    handleFilterChange(event, data) {
-        var value = data.value;
-
-        var filter = TalentUtil.deepCopy(this.state.filter);
-
-        if (value == 'showActive') {
-            filter.showActive = true;
-        }
-        else if (value == 'showClosed') {
-            filter.showClosed = true;
-        }
-        else if (value == 'showDraft') {
-            filter.showDraft = true;
-        }
-        else if (value == 'showExpired') {
-            filter.showExpired = true;
-        }
-        else if (value == 'showUnexpired') {
-            filter.showUnexpired = true;
-        }
-        
-        this.setState({filter: filter}, () => this.loadData());
-    }
-
     loadNewData(data) {
         var loader = this.state.loaderData;
         loader.isLoading = true;
         data[loaderData] = loader;
+        
         this.setState(data, () => {
             this.loadData(() => {
                 loader.isLoading = false;
@@ -128,6 +109,28 @@ export default class ManageJob extends React.Component {
                 })
             })
         });
+    }
+
+    handleFilterChange(event, data) {
+        var value = data.value;
+
+        var newFilter = TalentUtil.deepCopy(this.state.filter);
+
+        Object.keys(newFilter).forEach(v => {
+            newFilter[v] = value.includes(v);
+        });
+        
+        this.loadNewData({ filter: newFilter, activePage: 1 });
+    }
+
+    handleSortChange(e, { value }) {
+        this.loadNewData({ sortBy: { date: value }, activePage: 1 });
+    };
+
+    handlePageChange(e, { activePage }) {
+        if (activePage != this.state.activePage) {
+            this.loadNewData({ activePage: activePage });
+        }
     }
 
     render() {
@@ -140,10 +143,10 @@ export default class ManageJob extends React.Component {
         ]
 
         var sortOptions = [
-            { key: 'desc', text: 'Newest first', value: 'Newest first' },
-            { key: 'asc', text: 'Oldest first', value: 'Oldest first' }
+            { key: 'desc', text: 'Newest first', value: 'desc' },
+            { key: 'asc', text: 'Oldest first', value: 'asc' }
         ]
-        
+
         return (
             <BodyWrapper reload={this.init} loaderData={this.state.loaderData}>
                <div className ="ui container">
@@ -151,15 +154,16 @@ export default class ManageJob extends React.Component {
                         <div className="ui sixteen wide column">
                             <h3>List of Jobs</h3>
                             <div className="ui grid">
-                                    <div className="ui four wide column">
+                                    <div className="ui six wide column">
                                         <span>
                                             <Icon name='filter' />
-                                            Filter: {' '}
-                                            <Dropdown 
-                                                inline 
+                                            Filter: {''}
+                                            <Dropdown                                                 
+                                                multiple
                                                 placeholder="Choose filter" 
                                                 selection 
                                                 options={filterOptions} 
+                                                defaultValue={Object.keys(this.state.filter).filter(k => this.state.filter[k])}
                                                 onChange={this.handleFilterChange}
                                             />
                                         </span>
@@ -168,7 +172,14 @@ export default class ManageJob extends React.Component {
                                         <span>
                                             <Icon name='calendar alternate outline' />
                                                 Sort by date: {' '}
-                                            <Dropdown inline placeholder="Newest first" selection options={sortOptions} defaultValue={sortOptions[0].value} />
+                                            <Dropdown 
+                                                inline 
+                                                placeholder="Newest first" 
+                                                selection 
+                                                options={sortOptions} 
+                                                defaultValue={this.state.sortBy.date} 
+                                                onChange={this.handleSortChange}
+                                            />
                                         </span>
                                     </div>
                             </div>
@@ -182,21 +193,19 @@ export default class ManageJob extends React.Component {
                                 <div className="center aligned sixteen wide column">
                                     {this.state.loadJobs.length > 0 ?
                                         <Pagination
-                                            boundaryRange={0}
+                                            boundaryRange={1}
                                             defaultActivePage={this.state.activePage}
-                                            ellipsisItem={null}
-                                            firstItem={null}
-                                            lastItem={null}
+                                            ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}
+                                            firstItem={{ content: <Icon name='angle double left' />, icon: true }}
+                                            lastItem={{ content: <Icon name='angle double right' />, icon: true }}
+                                            prevItem={{ content: <Icon name='angle left' />, icon: true }}
+                                            nextItem={{ content: <Icon name='angle right' />, icon: true }}
                                             siblingRange={1}
                                             totalPages={this.state.totalPages}
-                                            onPageChange={(event, data) => {
-                                                this.setState({
-                                                    activePage: data.activePage
-                                                })
-                                            }}
+                                            onPageChange={this.handlePageChange}
                                         /> :
                                         null
-            }
+                                    }
                                 </div>
                             </div>
                         </div>

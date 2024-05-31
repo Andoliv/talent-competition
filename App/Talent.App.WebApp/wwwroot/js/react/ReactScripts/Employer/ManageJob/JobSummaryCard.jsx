@@ -50,11 +50,11 @@ export class JobSummaryCard extends React.Component {
                     </CardContent>
                     <CardContent extra>
                         <div className='ui left floated'>
-                            {
+                            {                                
                                 moment(job.expiryDate).isAfter(moment()) ? 
                                     <Button content='Active' color='green' /> : 
                                     <Button content='Expired' color='red' />
-                            }                   
+                            }     
                         </div>
                         <div className='ui right floated'>
                             <Button basic color='blue' onClick={() => this.closeJob(job.id)}>
