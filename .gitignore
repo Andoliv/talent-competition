@@ -9,4 +9,8 @@
 **/node_modules/
 **/bin/
 **/obj/
+<<<<<<< HEAD
 **/dist/
+=======
+# **/dist/
+>>>>>>> e321976c976c1c2f3659a2d8ed7f9443f743773e
