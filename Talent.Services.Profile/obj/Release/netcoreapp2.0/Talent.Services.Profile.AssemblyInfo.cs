@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Talent.Services.Profile")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f63c749e1ee643188c3e724d371a687eba11488b")]
 [assembly: System.Reflection.AssemblyProductAttribute("Talent.Services.Profile")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Talent.Services.Profile")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -127,7 +127,7 @@ export default class CreateJob extends React.Component {
         this.setState({
             jobData:data
         })
-        console.log(data);
+        // console.log(data);
     }
    
     render() {
