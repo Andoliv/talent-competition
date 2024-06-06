@@ -83,13 +83,11 @@ export class JobSummaryCard extends React.Component {
     };
 
     selectJob(id) {
-        console.log(`Selected job: ${id}`);
         var cookies = Cookies.get('talentAuthToken');
         //url: 'https://talentservicestalentanderson.azurewebsites.net/listing/listing/GetJobByToEdit',
     }
 
     closeJob(id) {
-        console.log(`Selected job: ${id}`);
         var url = 'https://talentservicestalentanderson.azurewebsites.net/listing/listing/closeJob';
         var cookies = Cookies.get('talentAuthToken');
 

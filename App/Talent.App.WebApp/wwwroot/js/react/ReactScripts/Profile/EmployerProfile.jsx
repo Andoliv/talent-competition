@@ -69,7 +69,7 @@ export default class EmployeeProfile extends React.Component {
                 this.updateWithoutSave(employerData)
             }.bind(this),
             error: function (res) {
-                console.log(res.status)
+                console.error(res.status)
             }
         }) 
         this.init()
