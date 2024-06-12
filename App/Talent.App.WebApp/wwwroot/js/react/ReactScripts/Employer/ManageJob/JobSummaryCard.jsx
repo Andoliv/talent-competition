@@ -24,25 +24,81 @@ export class JobSummaryCard extends React.Component {
     }
 
     convertLocation(location) {
-        let locationMeta = '';
-        if (location) {
-            let { city, country } = location;
-            if (city && country) {
-                locationMeta = `${city}, ${country}`;
-            } else if (city) {
-                locationMeta = city;
-            } else if (country) {
-                locationMeta = country;
-            }
-        }
+        if (!location) return '';
 
+        const { city, country } = location; 
+        
+        const locationMeta = city && country ? `${city}, ${country}` : city || country || '';
+        
         return locationMeta;
     }
 
-    init() {
-        this.props.jobData.forEach(job => {
-            let card = (
-                <Card key={job.id} fluid >
+    componentDidMount() {
+        // this.init();
+    };
+
+    selectJob(id) {
+        const cookies = Cookies.get('talentAuthToken');
+        //url: 'https://talentservicestalentanderson.azurewebsites.net/listing/listing/GetJobByToEdit',
+    }
+
+    displayCards() {
+        return this.state.cards;
+    }
+
+    closeJob(id) {
+        const url = 'https://talentservicestalentanderson.azurewebsites.net/listing/listing/closeJob';
+        const cookies = Cookies.get('talentAuthToken');
+
+        try {
+            if (!id) {
+                TalentUtil.notification.show("Job ID is missing", "error", null, null)
+                return;
+            }
+
+            $.ajax({
+                url: url,
+                headers: {
+                    'Authorization': 'Bearer ' + cookies,
+                    'Content-Type': 'application/json'
+                },
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(id),
+                dataType: "json",
+                success: function (res) {
+                    try {
+                        if (res.success == true) {
+                            TalentUtil.notification.show(res.message, "success", null, null);
+                            window.location = "/ManageJobs";
+                           
+                        } else {
+                            TalentUtil.notification.show(res.message, "error", null, null)
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        TalentUtil.notification.show("An error occured. Please try again", "error", null, null)
+                    }
+                    
+                }.bind(this),
+                error: function (res) {
+                    TalentUtil.notification.show(res.message, "error", null, null)
+                }
+            })
+
+        } catch (err) {
+            console.error(err);
+            TalentUtil.notification.show("An error occured. Please try again", "error", null, null)
+        }
+    }
+
+    render() {
+        if (!Array.isArray(this.props.jobData) || !this.props.jobData.length) {
+            return null;
+        }
+
+        const cards = this.props.jobData.map(job => (
+            <Card key={job.id} fluid >
                     <CardContent>
                         <CardHeader>{job.title}</CardHeader>
                         <CardMeta>{this.convertLocation(job.location)}</CardMeta>
@@ -72,54 +128,11 @@ export class JobSummaryCard extends React.Component {
                         </div>
                     </CardContent>
                 </Card>
-            );
+        ));
 
-            this.state.cards.push(card);
-        });
-    }
-
-    componentDidMount() {
-        this.init();
-    };
-
-    selectJob(id) {
-        var cookies = Cookies.get('talentAuthToken');
-        //url: 'https://talentservicestalentanderson.azurewebsites.net/listing/listing/GetJobByToEdit',
-    }
-
-    closeJob(id) {
-        var url = 'https://talentservicestalentanderson.azurewebsites.net/listing/listing/closeJob';
-        var cookies = Cookies.get('talentAuthToken');
-
-        $.ajax({
-            url: url,
-            headers: {
-                'Authorization': 'Bearer ' + cookies,
-                'Content-Type': 'application/json'
-            },
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(id),
-            dataType: "json",
-            success: function (res) {
-                if (res.success == true) {
-                    TalentUtil.notification.show(res.message, "success", null, null);
-                    window.location = "/ManageJobs";
-                   
-                } else {
-                    TalentUtil.notification.show(res.message, "error", null, null)
-                }
-            }.bind(this),
-            error: function (res) {
-                console.error(res.status)
-            }
-        })
-    }
-
-    render() {
         return (
             <CardGroup itemsPerRow={2}>
-                {this.state.cards}
+                {cards}
             </CardGroup>  
         );
     }

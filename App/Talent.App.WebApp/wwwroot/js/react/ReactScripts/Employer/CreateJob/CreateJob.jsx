@@ -60,15 +60,14 @@ export default class CreateJob extends React.Component {
     };
 
     loadData() {
-        //const root = "" 
-        //var param = root.getAttribute('data-id');
-        var param = this.props.match.params.id ? this.props.match.params.id : "";//workaround till we get Redux in to keep the page from breaking
-        var copyJobParam = this.props.match.params.copyId ? this.props.match.params.copyId : "";
+        let param = this.props.match.params.id ? this.props.match.params.id : "";//workaround till we get Redux in to keep the page from breaking
+        let copyJobParam = this.props.match.params.copyId ? this.props.match.params.copyId : "";
 
         if (param != "" || copyJobParam != "") {
-            var link = param != "" ? 'https://talentservicestalentanderson.azurewebsites.net/listing/listing/GetJobByToEdit?id=' + param
+            let link = param != "" ? 'https://talentservicestalentanderson.azurewebsites.net/listing/listing/GetJobByToEdit?id=' + param
                 : 'https://talentservicestalentanderson.azurewebsites.net/listing/listing/GetJobForCopy?id=' + copyJobParam;
-            var cookies = Cookies.get('talentAuthToken');
+            const cookies = Cookies.get('talentAuthToken');
+
             $.ajax({
                 url: link,
                 headers: {
@@ -91,34 +90,62 @@ export default class CreateJob extends React.Component {
                     }
                 }.bind(this)
             })
-        }       
+        }
+
     }
+
+    isFormValid(jobData) {
+        if (jobData.title == "" 
+            || jobData.description == "" 
+            || jobData.summary == "" 
+            || jobData.jobDetails.categories.category == "" 
+            || jobData.jobDetails.jobType.length == 0
+            || jobData.jobDetails.location.country == "" 
+            || jobData.jobDetails.startDate == null 
+            || jobData.expiryDate == null) {
+            return false;
+        }
+        return true;
+    }
+
     addUpdateJob() {
-        var jobData = this.state.jobData;
         // console.log("data to save:", jobData);
         //jobData.jobDetails.startDate = jobData.jobDetails.startDate.toDate();
         // console.log("date:", jobData.jobDetails.startDate);
-        var cookies = Cookies.get('talentAuthToken');   
-        $.ajax({
-            url: 'https://talentservicestalentanderson.azurewebsites.net/listing/listing/createUpdateJob',
-            headers: {
-                'Authorization': 'Bearer ' + cookies,
-                'Content-Type': 'application/json'
-            },
-            dataType:'json',
-            type: "post",
-            data: JSON.stringify(jobData),
-            success: function (res) {
-                if (res.success == true) {
-                    TalentUtil.notification.show(res.message, "success", null, null);
-                    window.location = "/ManageJobs";
-                   
-                } else {
-                    TalentUtil.notification.show(res.message, "error", null, null)
-                }
-                
-            }.bind(this)
-        })
+
+        try {
+            const jobData = this.state.jobData;
+            const cookies = Cookies.get('talentAuthToken');
+
+            if (!this.isFormValid(jobData)) {
+                TalentUtil.notification.show("Job data is incomplete", "error", null, null);
+            }
+
+            $.ajax({
+                url: 'https://talentservicestalentanderson.azurewebsites.net/listing/listing/createUpdateJob',
+                headers: {
+                    'Authorization': 'Bearer ' + cookies,
+                    'Content-Type': 'application/json'
+                },
+                dataType:'json',
+                type: "post",
+                data: JSON.stringify(jobData),
+                success: function (res) {
+                    if (res.success == true) {
+                        TalentUtil.notification.show(res.message, "success", null, null);
+                        window.location = "/ManageJobs";
+                       
+                    } else {
+                        TalentUtil.notification.show(res.message, "error", null, null);
+                    }
+                    
+                }.bind(this)
+            })
+            
+        } catch (err) {
+            console.error(err);
+            TalentUtil.notification.show("An error occured. Please try again", "error", null, null);
+        }
     }
 
     updateStateData(event) {
@@ -127,7 +154,6 @@ export default class CreateJob extends React.Component {
         this.setState({
             jobData:data
         })
-        // console.log(data);
     }
    
     render() {
