@@ -93,11 +93,11 @@ export class JobSummaryCard extends React.Component {
     }
 
     render() {
-        if (!Array.isArray(this.props.jobData) || !this.props.jobData.length) {
+        if (!this.props || !Array.isArray(this.props.jobData) || !this.props.jobData.map.length) {
             return null;
         }
 
-        const cards = this.props.jobData.map(job => (
+        const renderCards = this.props.jobData.map(job => (
             <Card key={job.id} fluid >
                     <CardContent>
                         <CardHeader>{job.title}</CardHeader>
@@ -132,7 +132,7 @@ export class JobSummaryCard extends React.Component {
 
         return (
             <CardGroup itemsPerRow={2}>
-                {cards}
+                {renderCards}
             </CardGroup>  
         );
     }

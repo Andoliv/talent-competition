@@ -118,7 +118,8 @@ export default class CreateJob extends React.Component {
             const cookies = Cookies.get('talentAuthToken');
 
             if (!this.isFormValid(jobData)) {
-                TalentUtil.notification.show("Job data is incomplete", "error", null, null);
+                TalentUtil.notification.show("Job required fields is incomplete!", "error", null, null);
+                return;
             }
 
             $.ajax({

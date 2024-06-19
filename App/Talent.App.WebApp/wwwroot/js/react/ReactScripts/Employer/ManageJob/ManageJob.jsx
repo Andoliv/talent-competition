@@ -121,6 +121,8 @@ export default class ManageJob extends React.Component {
         });
     }
 
+    
+
     handleFilterChange(event, data) {
         let value = data.value;
 
@@ -240,7 +242,7 @@ export default class ManageJob extends React.Component {
                                         </span>
                                     </div>
                             </div>
-                            <div className="ui grid">
+                            <div>
                                 {this.renderJobSummaryCard()}
                             </div>
                             <div className="ui grid">

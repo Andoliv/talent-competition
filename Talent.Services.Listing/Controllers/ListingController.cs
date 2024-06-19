@@ -170,33 +170,22 @@ namespace Talent.Services.Listing.Controllers
             try
             {
                 employerId = employerId == null ? _userAppContext.CurrentUserId : employerId;
-                var sortedJobs = (await _jobService.GetEmployerJobsAsync(employerId));
+                var sortedJobs = await _jobService.GetEmployerJobsAsync(employerId);
 
-                if (!showActive)
+                sortedJobs = sortedJobs.Where(job =>
+                    (showActive && job.Status == JobStatus.Active) ||
+                    (showClosed && job.Status == JobStatus.Closed) ||
+                    (!showActive && !showClosed) // If neither active nor closed filters are selected, include all jobs regardless of status
+                );
+
+                if (showExpired && !showUnexpired)
                 {
-                    sortedJobs = sortedJobs.Where(x => x.Status != JobStatus.Active);
+                    sortedJobs = sortedJobs.Where(job => job.ExpiryDate < DateTime.UtcNow);
                 }
-
-                if(!showClosed)
+                else if (!showExpired && showUnexpired)
                 {
-                    sortedJobs = sortedJobs.Where(x => x.Status != JobStatus.Closed);
+                    sortedJobs = sortedJobs.Where(job => job.ExpiryDate >= DateTime.UtcNow);
                 }
-
-                if (!showExpired)
-                {
-                    sortedJobs = sortedJobs.Where(x => x.ExpiryDate >= DateTime.UtcNow);
-                }
-
-                if (!showUnexpired)
-                {
-                    sortedJobs = sortedJobs.Where(x => x.ExpiryDate < DateTime.UtcNow);
-                }
-
-                //TODO Draft not implemented yet
-                //if (!showDraft)
-                //{
-
-                //}
 
                 if (sortbyDate == "desc")
                 {
@@ -204,7 +193,6 @@ namespace Talent.Services.Listing.Controllers
                         .Select(x => new { x.Id, x.Title, x.Summary, x.JobDetails.Location, x.ExpiryDate, x.Status, noOfSuggestions = x.TalentSuggestions != null && x.TalentSuggestions.Count != 0 ? x.TalentSuggestions.Count : 0 });
                     return Json(new { Success = true, MyJobs = returnJobs, TotalCount = sortedJobs.Count() });
                 }
-
                 else
                 {
                     var returnJobs = sortedJobs.OrderBy(x => x.CreatedOn).Skip((activePage - 1) * limit).Take(limit)

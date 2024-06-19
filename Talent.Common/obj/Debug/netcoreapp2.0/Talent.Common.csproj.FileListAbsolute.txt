@@ -35,3 +35,4 @@ C:\develop\Industry Connect\Internship\talent-competition\Talent.Common\obj\Debu
 C:\develop\Industry Connect\Internship\talent-competition\Talent.Common\obj\Debug\netcoreapp2.0\Talent.Common.csproj.CoreCompileInputs.cache
 C:\develop\Industry Connect\Internship\talent-competition\Talent.Common\obj\Debug\netcoreapp2.0\Talent.Common.dll
 C:\develop\Industry Connect\Internship\talent-competition\Talent.Common\obj\Debug\netcoreapp2.0\Talent.Common.pdb
+C:\develop\Industry Connect\Internship\talent-competition\Talent.Common\obj\Debug\netcoreapp2.0\Talent.Common.sourcelink.json
