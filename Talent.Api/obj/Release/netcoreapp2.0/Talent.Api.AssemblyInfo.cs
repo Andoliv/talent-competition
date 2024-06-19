@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Talent.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9f11b165ace669d0d872496c9fdf9da37c86c109")]
 [assembly: System.Reflection.AssemblyProductAttribute("Talent.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Talent.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

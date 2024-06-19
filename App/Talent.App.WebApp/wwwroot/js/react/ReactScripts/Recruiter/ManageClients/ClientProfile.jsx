@@ -21,9 +21,9 @@ class ClientProfileModal extends React.Component {
 
     loadData(id) {
         if (id != undefined) {
-            var cookies = Cookies.get('talentAuthToken');
+            const cookies = Cookies.get('talentAuthToken');
             $.ajax({
-                url: 'http://localhost:60290/profile/profile/getEmployerProfile?id=' + id + '&role=' + 'employer',
+                url: 'https://talentservicesprofileanderson.azurewebsites.net/profile/profile/getEmployerProfile?id=' + id + '&role=' + 'employer',
                 headers: {
                     'Authorization': 'Bearer ' + cookies,
                     'Content-Type': 'application/json'
@@ -32,14 +32,15 @@ class ClientProfileModal extends React.Component {
                 contentType: "application/json",
                 dataType: "json",
                 success: function (res) {
-                    let employerData = null;
-                    if (res.employer) {
-                        employerData = res.employer                        
-                    }
-                    this.updateWithoutSave(employerData)
+                    if (res && res.employer) {
+                        let employerData = res.employer;
+                        this.updateWithoutSave(employerData);                        
+                    } else {
+                        TalentUtil.notification.show(res.message, "error", null, null)
+                    }                    
                 }.bind(this),
                 error: function (res) {
-                    console.log(res.status)
+                    TalentUtil.notification.show(res.message, "error", null, null)
                 }
             })
         }
@@ -51,7 +52,7 @@ class ClientProfileModal extends React.Component {
     saveData() {
         var cookies = Cookies.get('talentAuthToken');
         $.ajax({
-            url: 'http://localhost:60290/profile/profile/saveClientProfile',
+            url: 'https://talentservicesprofileanderson.azurewebsites.net/profile/profile/saveClientProfile',
             headers: {
                 'Authorization': 'Bearer ' + cookies,
                 'Content-Type': 'application/json'

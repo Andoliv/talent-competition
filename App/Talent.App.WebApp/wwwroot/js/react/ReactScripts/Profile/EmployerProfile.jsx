@@ -50,9 +50,10 @@ export default class EmployeeProfile extends React.Component {
     }
 
     loadData() {
-        var cookies = Cookies.get('talentAuthToken');
+        const cookies = Cookies.get('talentAuthToken');
+        
         $.ajax({
-            url: 'http://localhost:60290/profile/profile/getEmployerProfile',
+            url: 'https://talentservicesprofileanderson.azurewebsites.net/profile/profile/getEmployerProfile',
             headers: {
                 'Authorization': 'Bearer ' + cookies,
                 'Content-Type': 'application/json'
@@ -69,7 +70,7 @@ export default class EmployeeProfile extends React.Component {
                 this.updateWithoutSave(employerData)
             }.bind(this),
             error: function (res) {
-                console.log(res.status)
+                console.error(res.status)
             }
         }) 
         this.init()
@@ -118,7 +119,8 @@ export default class EmployeeProfile extends React.Component {
         let fieldValidationErrors = this.state.formErrors;
         let emailValid = this.state.emailValid;
         let nameValid = this.state.nameValid;
-        var formValid = this.state.formValid;
+        let formValid = this.state.formValid;
+
         switch (fieldName) {
             case 'email':
                 emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
@@ -150,10 +152,10 @@ export default class EmployeeProfile extends React.Component {
     }
 
     saveData() {
+        const cookies = Cookies.get('talentAuthToken');
 
-        var cookies = Cookies.get('talentAuthToken');
         $.ajax({
-            url: 'http://localhost:60290/profile/profile/saveEmployerProfile',
+            url: 'https://talentservicesprofileanderson.azurewebsites.net/profile/profile/saveEmployerProfile',
             headers: {
                 'Authorization': 'Bearer ' + cookies,
                 'Content-Type': 'application/json'

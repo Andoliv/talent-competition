@@ -7,6 +7,6 @@
 /.idea/
 
 **/node_modules/
-# **/bin/
-# **/obj/
-# **/dist/
+**/bin/
+**/obj/
+**/dist/

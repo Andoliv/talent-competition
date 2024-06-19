@@ -57,3 +57,4 @@ C:\develop\Industry Connect\Internship\talent-competition\Talent.Services.Identi
 C:\develop\Industry Connect\Internship\talent-competition\Talent.Services.Identity\obj\Debug\netcoreapp2.0\Talent.Services.Identity.dll
 C:\develop\Industry Connect\Internship\talent-competition\Talent.Services.Identity\obj\Debug\netcoreapp2.0\Talent.Services.Identity.pdb
 C:\develop\Industry Connect\Internship\talent-competition\Talent.Services.Identity\obj\Debug\netcoreapp2.0\Talent.Services.Identity.genruntimeconfig.cache
+C:\develop\Industry Connect\Internship\talent-competition\Talent.Services.Identity\obj\Debug\netcoreapp2.0\Talent.Services.Identity.sourcelink.json
